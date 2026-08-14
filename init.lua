@@ -99,3 +99,22 @@ end, { desc = "Grep in files" })
 vim.keymap.set("n", "<C-;>", function()
     require("telescope.builtin").current_buffer_fuzzy_find()
 end, { desc = "Find in current file" })
+
+-- ═══════════════════════════════════════════
+-- Подсветка не-ASCII символов
+-- ═══════════════════════════════════════════
+
+-- Создаем группу автокоманд, чтобы правило не дублировалось
+local non_ascii_group = vim.api.nvim_create_augroup("HighlightNonASCII", { clear = true })
+
+-- Задаем цвет подсветки (красный фон)
+vim.cmd([[highlight NonASCII guibg=Red ctermbg=Red]])
+
+-- Применяем правило подсветки при открытии любого файла
+vim.api.nvim_create_autocmd("BufReadPost", {
+  group = non_ascii_group,
+  pattern = "*",
+  callback = function()
+    vim.fn.matchadd("NonASCII", "[^\\x00-\\x7F]")
+  end,
+})
