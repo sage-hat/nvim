@@ -100,6 +100,13 @@ vim.keymap.set("n", "<C-;>", function()
     require("telescope.builtin").current_buffer_fuzzy_find()
 end, { desc = "Find in current file" })
 
+-- Управление сворачиванием
+vim.keymap.set("n", "za", "za", { desc = "Toggle fold" })        -- открыть/закрыть блок
+vim.keymap.set("n", "zR", "zR", { desc = "Open all folds" })    -- развернуть всё
+vim.keymap.set("n", "zM", "zM", { desc = "Close all folds" })   -- свернуть всё
+vim.keymap.set("n", "zj", "zj", { desc = "Next fold" })         -- перейти к следующему блоку
+vim.keymap.set("n", "zk", "zk", { desc = "Previous fold" })     -- перейти к предыдущему
+
 -- ═══════════════════════════════════════════
 -- Подсветка не-ASCII символов
 -- ═══════════════════════════════════════════
@@ -118,3 +125,17 @@ vim.api.nvim_create_autocmd("BufReadPost", {
     vim.fn.matchadd("NonASCII", "[^\\x00-\\x7F]")
   end,
 })
+-- ═══════════════════════════════════════════
+-- Сворачивание блоков кода
+-- ═══════════════════════════════════════════
+
+vim.opt.foldmethod = "syntax"     -- сворачивание по синтаксису (для Java)
+vim.opt.foldenable = true         -- включить сворачивание
+vim.opt.foldlevelstart = 99       -- не сворачивать всё при открытии
+vim.opt.foldnestmax = 10          -- максимальная глубина вложенности
+
+-- ═══════════════════════════════════════════
+-- Смещение при прокрутке
+-- ═══════════════════════════════════════════
+
+vim.opt.scrolloff = 5   -- минимальное количество строк над/под курсором
