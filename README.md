@@ -19,7 +19,7 @@ chmod +x nvim-linux-x86_64.appimage
 sudo mv nvim-linux-x86_64.appimage /usr/local/bin/nvim
 
 # добавить алиас в .bachrc
-alias nvim="/home/web-admin/.local/bin/nvim"
+alias nvim="~/.local/bin/nvim"
 
 # Проверь версию
 nvim --version
