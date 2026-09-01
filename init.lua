@@ -115,7 +115,7 @@ vim.keymap.set("n", "zk", "zk", { desc = "Previous fold" })     -- перейт�
 local non_ascii_group = vim.api.nvim_create_augroup("HighlightNonASCII", { clear = true })
 
 -- Задаем цвет подсветки (красный фон)
-vim.cmd([[highlight NonASCII guibg=Red ctermbg=Red]])
+vim.cmd([[highlight NonASCII guibg=Green ctermbg=Green]])
 
 -- Применяем правило подсветки при открытии любого файла
 vim.api.nvim_create_autocmd("BufReadPost", {

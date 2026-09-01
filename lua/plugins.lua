@@ -143,37 +143,43 @@ return {
                 filetypes = { "java" },
             })
 
-            -- Автоматически запускаем LSP для Java-файлов
-            vim.api.nvim_create_autocmd("FileType", {
-                pattern = "java",
-                callback = function()
-                    local clients = vim.lsp.get_clients({ name = "jdtls" })
-                    if #clients == 0 then
-                        vim.lsp.start({
-                            name = "jdtls",
-                            cmd = {
-                                "java",
-                                "-Declipse.application=org.eclipse.jdt.ls.core.id1",
-                                "-Dosgi.bundles.defaultStartLevel=4",
-                                "-Declipse.product=org.eclipse.jdt.ls.core.product",
-                                "-Dlog.level=ERROR",
-                                "--add-modules=ALL-SYSTEM",
-                                "--add-opens",
-                                "java.base/java.util=ALL-UNNAMED",
-                                "--add-opens",
-                                "java.base/java.lang=ALL-UNNAMED",
-                                "-jar",
-                                launcher_jar,
-                                "-configuration",
-                                jdtls_path .. "/config_linux",
-                                "-data",
-                                vim.fn.getcwd() .. "/.jdtls-workspace",
-                            },
-                            root_dir = vim.fs.root(0, { ".git", "pom.xml", "build.gradle" }),
-                        })
-                    end
-                end,
+-- Автоматически запускаем LSP ДЛЯ КАЖДОГО Java-файла
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = "java",
+    callback = function(args)
+        local bufnr = args.buf
+        
+        -- Проверяем, есть ли клиент ИМЕННО ДЛЯ ЭТОГО БУФЕРА
+        local clients = vim.lsp.get_clients({ bufnr = bufnr, name = "jdtls" })
+        if #clients == 0 then
+            -- Запускаем LSP и ПРИВЯЗЫВАЕМ к этому буферу
+            vim.lsp.start({
+                name = "jdtls",
+                cmd = {
+                    "java",
+                    "-Declipse.application=org.eclipse.jdt.ls.core.id1",
+                    "-Dosgi.bundles.defaultStartLevel=4",
+                    "-Declipse.product=org.eclipse.jdt.ls.core.product",
+                    "-Dlog.level=ERROR",
+                    "--add-modules=ALL-SYSTEM",
+                    "--add-opens",
+                    "java.base/java.util=ALL-UNNAMED",
+                    "--add-opens",
+                    "java.base/java.lang=ALL-UNNAMED",
+                    "-jar",
+                    launcher_jar,
+                    "-configuration",
+                    jdtls_path .. "/config_linux",
+                    "-data",
+                    vim.fn.getcwd() .. "/.jdtls-workspace",
+                },
+                root_dir = vim.fs.root(0, { ".git", "pom.xml", "build.gradle" }),
+                -- ЭТО ГЛАВНОЕ: привязываем к конкретному буферу
+                bufnr = bufnr,
             })
+        end
+    end,
+})
 
             -- Горячие клавиши для LSP
             vim.api.nvim_create_autocmd("LspAttach", {
